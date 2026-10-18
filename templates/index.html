@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 智能判分系统</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <p class="eyebrow">AI GRADING SYSTEM · STEP 3</p>
+      <h1>AI 智能判分系统</h1>
+      <p class="subtitle">逐项评分、老师审核、保存测试记录。</p>
+    </header>
+
+    {% if message %}<section class="notice success" role="status"><strong>提示</strong><p>{{ message }}</p></section>{% endif %}
+    {% if error %}<section class="notice error" role="alert"><strong>出现问题</strong><p>{{ error }}</p></section>{% endif %}
+
+    <form method="post" class="panel">
+      <label for="question">题目</label>
+      <textarea id="question" name="question" rows="3" placeholder="例如：请解释什么是 C 语言中的变量。" required>{{ values.question }}</textarea>
+      <label for="max_score">满分</label>
+      <input id="max_score" name="max_score" type="number" min="1" step="0.5" value="{{ values.max_score or '10' }}" required>
+      <label for="rubric">评分标准</label>
+      <textarea id="rubric" name="rubric" rows="4" placeholder="例如：概念准确 4 分，说明用途 3 分，举例正确 3 分。" required>{{ values.rubric }}</textarea>
+      <label for="answer">学生答案</label>
+      <textarea id="answer" name="answer" rows="5" placeholder="在这里输入学生的答案……" required>{{ values.answer }}</textarea>
+      <button type="submit" name="action" value="grade">开始 AI 评分</button>
+      <p class="hint">调用真实模型可能产生费用。请使用虚构或去标识化的测试答案，不要输入敏感个人信息。</p>
+    </form>
+
+    {% if result %}
+    <section class="panel result">
+      <h2>AI 评分结果</h2>
+      <div class="scoreline"><span>AI 建议总分</span><strong>{{ result.score }} / {{ values.max_score }}</strong></div>
+      {% if not result.rubric_total_matches %}
+      <p class="warning"><strong>注意：</strong>模型返回的各评分项满分合计为 {{ result.criteria_max_total }}，与老师填写的满分 {{ values.max_score }} 不一致。请检查评分标准的分值设置，再确认结果。</p>
+      {% endif %}
+      <h3>逐项评分</h3>
+      <div class="table-wrap"><table><thead><tr><th>评分项目</th><th>得分</th><th>评分依据</th></tr></thead><tbody>
+      {% for item in result.criterion_scores %}
+      <tr><td>{{ item.name }}</td><td>{{ item.score }} / {{ item.max_score }}</td><td>{{ item.reason }}</td></tr>
+      {% endfor %}
+      </tbody></table></div>
+      <h3>总体评分理由</h3><p>{{ result.reason }}</p>
+      <h3>答案中的优点</h3><p>{{ result.strengths }}</p>
+      <h3>扣分原因 / 待改进之处</h3><p>{{ result.improvements }}</p>
+      <h3>改进建议</h3><p>{{ result.suggestion }}</p>
+      <p class="timing">本次模型调用耗时：{{ result.elapsed_seconds }} 秒（仅供本机测试记录，网络延迟会影响结果）。</p>
+
+      <form method="post" class="teacher-form">
+        <input type="hidden" name="question" value="{{ values.question }}">
+        <input type="hidden" name="max_score" value="{{ values.max_score }}">
+        <input type="hidden" name="rubric" value="{{ values.rubric }}">
+        <input type="hidden" name="answer" value="{{ values.answer }}">
+        <input type="hidden" name="record_id" value="{{ record_id }}">
+        <input type="hidden" name="ai_score" value="{{ result.score }}">
+        <textarea name="criteria_json" hidden>{{ result.criterion_scores | tojson }}</textarea>
+        <input type="hidden" name="ai_reason" value="{{ result.reason }}">
+        <input type="hidden" name="ai_strengths" value="{{ result.strengths }}">
+        <input type="hidden" name="ai_improvements" value="{{ result.improvements }}">
+        <input type="hidden" name="ai_suggestion" value="{{ result.suggestion }}">
+        <input type="hidden" name="ai_elapsed_seconds" value="{{ result.elapsed_seconds }}">
+        <input type="hidden" name="rubric_total_matches" value="{{ 'true' if result.rubric_total_matches else 'false' }}">
+        <input type="hidden" name="criteria_max_total" value="{{ result.criteria_max_total }}">
+        <label for="final_score">老师确认的最终分数</label>
+        <input id="final_score" name="final_score" type="number" min="0" max="{{ values.max_score }}" step="0.1" value="{{ final_score }}" required>
+        <button type="submit" name="action" value="confirm" class="secondary">确认并保存评分记录</button>
+      </form>
+      {% if confirmed %}<p class="confirmed"><strong>最终确认分数：{{ final_score }} / {{ values.max_score }}</strong></p>{% endif %}
+    </section>
+    {% endif %}
+
+    <footer>本地开发版 · 第三阶段：逐项评分与记录保存</footer>
+  </main>
+</body>
+</html>

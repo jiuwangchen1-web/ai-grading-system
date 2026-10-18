@@ -1,0 +1,33 @@
+* { box-sizing: border-box; }
+:root { font-family: "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; color: #1f2937; background: #f3f5f8; }
+body { margin: 0; padding: 32px 16px; }
+.container { max-width: 920px; margin: 0 auto; }
+header { margin-bottom: 24px; }
+.eyebrow { color: #0f766e; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; }
+h1 { margin: 8px 0; font-size: clamp(28px, 5vw, 40px); }
+.subtitle, .hint, footer, .timing { color: #64748b; line-height: 1.7; }
+.panel, .notice { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 18px 0; box-shadow: 0 8px 24px rgba(15,23,42,.04); }
+label { display: block; margin: 18px 0 8px; font-weight: 700; }
+label:first-child { margin-top: 0; }
+input, textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 9px; padding: 12px; font: inherit; line-height: 1.6; background: #fff; }
+input:focus, textarea:focus { outline: 2px solid #99f6e4; border-color: #0f766e; }
+button { width: 100%; border: 0; border-radius: 10px; padding: 14px 18px; margin-top: 20px; background: #0f766e; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+button:hover { background: #115e59; }
+button.secondary { background: #334155; }
+button.secondary:hover { background: #1e293b; }
+.notice { border-left: 5px solid #0f766e; }
+.notice p { line-height: 1.7; margin-bottom: 0; }
+.notice.error { border-left-color: #dc2626; background: #fff7f7; }
+.result h2 { margin-top: 0; }
+.result h3 { margin: 24px 0 8px; font-size: 16px; }
+.result p { line-height: 1.8; white-space: pre-wrap; }
+.scoreline { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px; border-radius: 10px; background: #ecfdf5; }
+.scoreline strong { font-size: 24px; color: #0f766e; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+th, td { border-bottom: 1px solid #e2e8f0; padding: 12px; text-align: left; vertical-align: top; line-height: 1.65; }
+th { background: #f8fafc; white-space: nowrap; }
+.warning { padding: 12px; background: #fffbeb; border-radius: 8px; color: #92400e; }
+.teacher-form { margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 8px; }
+.confirmed { padding: 14px; border-radius: 8px; background: #ecfdf5; color: #065f46; }
+footer { text-align: center; font-size: 13px; padding: 16px; }
